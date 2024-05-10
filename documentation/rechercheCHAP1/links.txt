@@ -1,0 +1,31 @@
+https://www.logiciels.pro/logiciel-saas/xapian/ : avis sur xapian
+
+https://www.next-decision.fr/editeurs-bi/restitution/elastic-kibana : documentation sur elasticSearch et kibana
+
+https://datascientest.com/kibana-loutil-de-visualisation-des-donnees-indexees-a-elasticsearch :  avantage et def de kibana
+https://betterstack.com/community/comparisons/kibana-alternatives/ : inconvinients de kibana
+
+https://www.knowi.com/blog/what-is-elastic-search/ : Elasticsearch: What it is, How it works, and it's usage
+https://android-mt.ouest-france.fr/news/quels-sont-les-avantages-a-utiliser-elasticsearch/121245/ : avantage et def de elasticsearch
+
+https://openclassrooms.com/fr/courses/1750566-optimisez-la-securite-informatique-grace-au-monitoring/7145268-decouvrez-la-stack-elk : recherche en generale
+
+https://www.algolia.com/doc/ : algolia def
+
+https://www.syloe.com/glossaire/grafana/ : graffana def + avantages
+https://learn.microsoft.com/fr-fr/azure/managed-grafana/known-limitations : limite de grafana
+
+
+https://learn.microsoft.com/fr-fr/power-bi/fundamentals/power-bi-overview : power Bi
+https://ajelix.com/fr/les-blog/avantages-et-inconvenients-de-power-bi/: +/- de powerBi
+
+https://www.next-decision.fr/editeurs-big-data/apache-solr : def + avantage de apache solr
+
+https://www.adimeo.com/blog/elasticsearch-ou-solr-moteur-de-recherche : SolR ou elasticSearch comparaison
+https://www.linkedin.com/pulse/présentation-de-solr-et-elasticsearch-dominique-bejean/ : solr et elasticsearch comparaison
+
+https://www.projectpro.io/compare/kibana-vs-power-bi : quotes pour kibana / kibana vs Power Bi
+
+https://www.educba.com/solr-vs-elasticsearch/ : image de solr vs elasticsearch
+
+https://www.gestisoft.com/fr/blogue/quels-sont-les-avantages-de-power-bi: les avantages de power bi

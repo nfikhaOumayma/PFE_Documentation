@@ -1,0 +1,127 @@
+package com.example.demo.service;
+
+import com.example.demo.dto.TotalLoans;
+import com.example.demo.rep.ACMLoanElasticSearchRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.IndexOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.stereotype.Service;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+@Service
+public class ACMLoanServiceImpl implements ACMLoanService {
+
+	@Autowired
+	private ACMLoanElasticSearchRepository rep;
+
+	@Autowired
+	private ElasticsearchRestTemplate elasticsearchRestTemplate;
+
+	private Boolean exist;
+
+	private List<TotalLoans> findTotalLoans() {
+
+		return rep.getTotalLoans();
+	}
+
+	public void IndexTotalLoan() {
+
+		List<TotalLoans> newData = findTotalLoans();
+
+		String indexName = "all_loans";
+
+		IndexCoordinates indexCoordinates = IndexCoordinates.of(indexName);
+		IndexOperations indexOperations = elasticsearchRestTemplate.indexOps(indexCoordinates);
+
+		if (indexOperations.exists()) {
+			List<TotalLoans> oldData = findAllLoansFromIndex(indexName);
+
+			// Save existing data with timestamp as a new index
+			String historicalIndexName = "total_loans_" + LocalDate.now().toString();
+			IndexCoordinates historicalIndexCoordinates = IndexCoordinates.of(historicalIndexName);
+			elasticsearchRestTemplate.save(oldData, historicalIndexCoordinates);
+
+			// Check if data has changed
+			boolean dataChanged = compareTotalLoans(oldData, newData); // true if changed
+
+			if (dataChanged) {
+				// Delete the existing index
+				indexOperations.delete();
+
+				// Create a new index and save new data
+				indexOperations.create();
+				elasticsearchRestTemplate.save(newData, indexCoordinates);
+
+				System.out.println("Index updated with new loan data");
+			}
+			else {
+				// Delete the new index since data is the same
+				elasticsearchRestTemplate.indexOps(historicalIndexCoordinates).delete();
+				System.out.println("Data remains the same, new index deleted");
+			}
+		}
+		else {
+			// If index does not exist, create it and save new data
+			indexOperations.create();
+			elasticsearchRestTemplate.save(newData, indexCoordinates);
+			System.out.println("New index created with loan data");
+		}
+	}
+
+	private List<TotalLoans> findAllLoansFromIndex(String indexName) {
+
+		Query query = new NativeSearchQueryBuilder().withQuery(QueryBuilders.matchAllQuery())
+				.withPageable(PageRequest.of(0, 1000)) // Adjust page size as needed
+				.build();
+
+		SearchHits<TotalLoans> searchHits = elasticsearchRestTemplate.search(query,
+				TotalLoans.class, IndexCoordinates.of(indexName));
+
+		List<TotalLoans> loans = new ArrayList<>();
+		Iterator<SearchHit<TotalLoans>> iterator = searchHits.iterator();
+		while (iterator.hasNext()) {
+			loans.add(iterator.next().getContent());
+		}
+		return loans;
+	}
+
+	// if different => true
+	private boolean compareTotalLoans(List<TotalLoans> firstList, List<TotalLoans> secondList) {
+	    // Compare sizes of the two lists
+	    if (firstList.size() != secondList.size()) {
+	        System.out.println("Size difference:");
+	        System.out.println("First list size: " + firstList.size());
+	        System.out.println("Second list size: " + secondList.size());
+	        return true; // Size mismatch, lists are different
+	    }
+
+	    // Compare each document in the lists
+	    boolean different = false;
+	    for (int i = 0; i < firstList.size(); i++) {
+	        if (!firstList.get(i).equals(secondList.get(i))) {
+	            System.out.println("Field difference at index " + i + ":");
+	            System.out.println("First list item: " + firstList.get(i));
+	            System.out.println("Second list item: " + secondList.get(i));
+	            different = true; // Document at index i is different
+	        }
+	    }
+
+	    if (!different) {
+	        System.out.println("Lists are identical.");
+	    }
+
+	    return different;
+	}
+
+
+}

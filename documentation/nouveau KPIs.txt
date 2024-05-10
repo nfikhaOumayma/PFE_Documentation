@@ -1,0 +1,32 @@
+
+Requête Base ACM :
+
+Nombre de prêts dans chaque catégorie de statut.
+Taux d'approbation.
+Montant moyen du prêt.
+Pourcentage de prêts émis.
+Taux moyen annuel (APR).
+Répartition du statut de la demande de prêt.
+
+Requête ACM_CALENDAR_EVENT :
+
+Nombre d'événements par statut (NOUVEAU, FERMÉ).
+Délai moyen (en jours) pour les événements fermés.
+Délai moyen (en jours) pour les nouveaux événements.
+
+Requête ACM_COLLECTION (COLLECTION_TYPE = 'COLLECTION') :
+
+Nombre de recouvrements actifs.
+Nombre de recouvrements clos.
+
+Requête ACM_COLLECTION (COLLECTION_TYPE = 'LEGAL') :
+
+Nombre de recouvrements légaux actifs.
+Nombre de recouvrements légaux clos.
+
+Requêtes Base Abacus :
+
+Nombre de comptes dans chaque catégorie de statut (par exemple, Radié, Soldé, Payé, Actif, Remboursement anticipé).
+Montant total de l'émission des prêts.
+Date moyenne d'émission des prêts.
+Une fois que nous avons défini les KPI pour chaque requête, nous pouvons alors procéder à l'écriture des instructions SQL pour calculer ces métriques. Souhaitez-vous que nous continuions en écrivant des instructions SQL pour ces KPI ?

@@ -1,0 +1,26 @@
+SELECT [TYPE_EVENT], COUNT(*) AS Nombre_Evenements
+FROM [ACM].[dbo].[ACM_CALENDAR_EVENT]
+GROUP BY [TYPE_EVENT]
+
+SELECT [STATUT], COUNT(*) AS Nombre_Evenements
+FROM [ACM].[dbo].[ACM_CALENDAR_EVENT]
+GROUP BY [STATUT]
+
+
+SELECT [USERNAME], COUNT(*) AS Nombre_Evenements
+FROM [ACM].[dbo].[ACM_CALENDAR_EVENT]
+GROUP BY [USERNAME]
+
+SELECT CONVERT(date, [DATE_DEBUT]) AS DateDébut, COUNT(*) AS Nombre_Evenements
+FROM [ACM].[dbo].[ACM_CALENDAR_EVENT]
+GROUP BY CONVERT(date, [DATE_DEBUT])
+
+SELECT 
+    [STATUT],
+    [TYPE_EVENT] AS Type_Workflow,
+    COUNT(*) AS Nombre_Taches
+FROM 
+    [ACM].[dbo].[ACM_CALENDAR_EVENT]
+GROUP BY 
+    [STATUT],
+    [TYPE_EVENT]

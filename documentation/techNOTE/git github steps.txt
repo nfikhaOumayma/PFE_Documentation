@@ -1,0 +1,47 @@
+Sure, let's outline the steps for sharing your Spring Boot project on GitHub, adding your friend as a collaborator, and then updating and pulling changes between both of your local environments. Here are the detailed steps and commands:
+
+Set up the GitHub repository:
+
+Go to GitHub and create a new repository for your Spring Boot project.
+Clone the repository into STS:
+
+Open STS and switch to the "Git Repositories" perspective.
+Click on "Clone a Git repository" icon or go to File -> Import -> Git -> Projects from Git -> Clone URI.
+Paste the repository URL and follow the prompts to clone the repository into your workspace.
+Import the project into STS:
+
+Once the cloning is complete, switch back to the "Java" perspective.
+Go to File -> Import -> Maven -> Existing Maven Projects.
+Navigate to the directory where you cloned the repository and select the project's root directory.
+Click "Finish" to import the project.
+Add your friend as a collaborator:
+
+Go to your GitHub repository.
+Navigate to "Settings" -> "Manage access".
+Click on "Invite a collaborator" and enter your friend's GitHub username or email.
+Work on your features:
+
+Make your changes to the code in STS.
+Stage your changes by right-clicking on the project, selecting "Team" -> "Commit".
+Enter a commit message and click "Commit and Push".
+Push your changes to GitHub:
+
+In the commit dialog, make sure your branch is selected and click "Commit and Push".
+If prompted, enter your GitHub credentials.
+Your changes will be pushed to GitHub.
+Your friend pulls the changes:
+
+Your friend clones the repository into their local environment using the repository URL.
+Your friend imports the project into STS:
+
+Once the cloning is complete, they import the project into STS following the same steps as mentioned earlier.
+Your friend works on their features:
+
+Your friend makes their changes to the code in STS.
+They stage their changes, commit, and push them to GitHub.
+You pull your friend's changes:
+
+In STS, you can pull your friend's changes by right-clicking on the project in the "Git Repositories" view and selecting "Pull".
+Continue development:
+Repeat these steps as you and your friend continue to work on new features or updates to the project.
+These steps should help you collaborate effectively on your Spring Boot project using Git and GitHub within the Spring Tool Suite.

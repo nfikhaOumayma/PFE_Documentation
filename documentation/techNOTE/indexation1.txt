@@ -1,0 +1,105 @@
+package com.example.demo.service;
+
+import com.example.demo.dto.TotalLoans;
+import com.example.demo.rep.ACMLoanElasticSearchRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.stereotype.Service;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.SearchHitsIterator;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+@Service
+public class ACMLoanServiceImpl implements ACMLoanService {
+
+
+    @Autowired
+    private ACMLoanElasticSearchRepository rep;
+
+    @Autowired
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
+
+    private static final String INDEX_NAME = "all_loans";
+    private static final String HISTORICAL_INDEX_PREFIX = "total_loans_";
+
+    @Override
+    public void IndexTotalLoan() {
+        List<TotalLoans> newData = rep.getTotalLoans();
+        IndexCoordinates indexCoordinates = IndexCoordinates.of(INDEX_NAME);
+        IndexCoordinates historicalIndexCoordinates = IndexCoordinates.of(HISTORICAL_INDEX_PREFIX + LocalDate.now());
+
+        if (elasticsearchRestTemplate.indexOps(indexCoordinates).exists()) {
+            List<TotalLoans> oldData = findAllLoansFromIndex(INDEX_NAME);
+
+            if (!compareTotalLoans(oldData, newData)) {
+                // Data has changed, update index
+                updateIndexWithData(newData, indexCoordinates);
+                saveOldDataToHistoricalIndex(oldData, historicalIndexCoordinates);
+                System.out.println("Index updated with new loan data");
+            } else {
+                // Data remains the same, delete new index and log
+                elasticsearchRestTemplate.indexOps(historicalIndexCoordinates).delete();
+                System.out.println("Data remains the same, new index deleted");
+            }
+        } else {
+            // Index does not exist, create it and save new data
+            createIndexWithData(newData, indexCoordinates);
+            System.out.println("New index created with loan data");
+        }
+    }
+
+    private List<TotalLoans> findAllLoansFromIndex(String indexName) {
+    	Query query = new NativeSearchQueryBuilder()
+    	        .withQuery(QueryBuilders.matchAllQuery())
+    	        .withPageable(PageRequest.of(0, 1000)) // Adjust page size as needed
+    	        .build();
+
+        SearchHits<TotalLoans> searchHits = elasticsearchRestTemplate.search(query, TotalLoans.class, IndexCoordinates.of(indexName));
+
+        List<TotalLoans> loans = new ArrayList<>();
+        Iterator<SearchHit<TotalLoans>> iterator = searchHits.iterator();
+        while (iterator.hasNext()) {
+            loans.add(iterator.next().getContent());
+        }
+        return loans;
+    }
+
+    private void saveOldDataToHistoricalIndex(List<TotalLoans> oldData, IndexCoordinates historicalIndexCoordinates) {
+        elasticsearchRestTemplate.save(oldData, historicalIndexCoordinates);
+    }
+
+    private boolean compareTotalLoans(List<TotalLoans> firstList, List<TotalLoans> secondList) {
+        if (firstList.size() != secondList.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < firstList.size(); i++) {
+            if (!firstList.get(i).equals(secondList.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void updateIndexWithData(List<TotalLoans> newData, IndexCoordinates indexCoordinates) {
+        elasticsearchRestTemplate.indexOps(indexCoordinates).delete();
+        elasticsearchRestTemplate.indexOps(indexCoordinates).create();
+        elasticsearchRestTemplate.save(newData, indexCoordinates);
+    }
+
+    private void createIndexWithData(List<TotalLoans> newData, IndexCoordinates indexCoordinates) {
+        elasticsearchRestTemplate.indexOps(indexCoordinates).create();
+        elasticsearchRestTemplate.save(newData, indexCoordinates);
+    }
+}

@@ -1,0 +1,1 @@
+https://loud-technology.com/blog/refactoriser-un-monolithe-en-microservices/#:~:text=Pourquoi%20refactoriser%20une%20application%20monolithique%20en%20microservices%3F&text=La%20refonte%20d%27une%20application,du%20monde%20de%20la%20technologie. : Pourquoi refactoriser une application monolithique en microservices?
